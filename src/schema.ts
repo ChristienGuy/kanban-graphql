@@ -1,4 +1,20 @@
-import { builder, prisma } from "../builder";
+import { builder, prisma } from "./builder";
+
+builder.prismaObject("User", {
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    email: t.exposeString("email"),
+    name: t.exposeString("name"),
+    tasks: t.relation("tasks"),
+    tags: t.relation("tags"),
+    createdAt: t.expose("createdAt", {
+      type: "Date",
+    }),
+    updatedAt: t.expose("updatedAt", {
+      type: "Date",
+    }),
+  }),
+});
 
 builder.prismaObject("Task", {
   fields: (t) => ({
@@ -18,6 +34,8 @@ builder.prismaObject("Tag", {
   fields: (t) => ({
     id: t.exposeID("id"),
     name: t.exposeString("name"),
+    tasks: t.relation("tasks"),
+    user: t.relation("user"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
@@ -26,14 +44,5 @@ builder.prismaObject("Tag", {
     }),
   }),
 });
-
-builder.queryFields((t) => ({
-  tasks: t.prismaField({
-    type: ["Task"],
-    resolve: async (query, root, args, ctx) => {
-      return prisma.task.findMany();
-    },
-  }),
-}));
 
 export const schema = builder.toSchema();

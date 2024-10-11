@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "prisma generate && prisma migrate deploy && tsc -p tsconfig.json",
-    "start": "node ./dist/index.js",
-    "dev:server": "tsx watch ./src/index.ts",
+    "start": "node ./dist/app.js",
+    "dev:server": "tsx watch ./src/app.ts",
     "dev:prisma": "prisma generate --watch",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:prisma\"",
     "generate:prisma": "prisma generate"
@@ -21,14 +21,19 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
+    "@clerk/express": "^1.2.2",
     "@pothos/core": "^4.3.0",
     "@pothos/plugin-prisma": "^4.2.1",
     "@prisma/client": "^5.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "graphql": "^16.9.0",
     "graphql-scalars": "^1.23.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
+    "@types/cors": "^2.8.17",
     "concurrently": "^9.0.1",
     "prettier": "3.3.3",
     "prisma": "^5.20.0",
