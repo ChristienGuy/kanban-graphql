@@ -21,6 +21,7 @@ builder.prismaObject("Task", {
     id: t.exposeID("id"),
     title: t.exposeString("title"),
     tags: t.relation("tags"),
+    user: t.relation("user"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
