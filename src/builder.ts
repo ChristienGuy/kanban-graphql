@@ -24,36 +24,7 @@ export const builder = new SchemaBuilder<{
   },
 });
 
-builder.queryType({
-  fields: (t) => ({
-    tasks: t.prismaField({
-      type: ["Task"],
-      resolve: async (query, root, args, context) => {
-        return prisma.task.findMany({
-          where: { userId: context.auth.userId ?? undefined },
-        });
-      },
-    }),
-    tags: t.prismaField({
-      type: ["Tag"],
-      resolve: async (query, root, args, context) => {
-        return prisma.tag.findMany({
-          where: {
-            userId: context.auth.userId ?? undefined,
-          },
-        });
-      },
-    }),
-    user: t.prismaField({
-      type: "User",
-      resolve: async (query, root, args, context) => {
-        return prisma.user.findUniqueOrThrow({
-          where: { id: context.auth.userId ?? "" },
-        });
-      },
-    }),
-  }),
-});
+builder.queryType();
 // builder.mutationType();
 
 builder.addScalarType("Date", DateResolver);
