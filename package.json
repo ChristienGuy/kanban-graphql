@@ -4,24 +4,34 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js",
-    "dev": "tsx watch ./src/index.ts"
+    "build": "prisma generate && prisma migrate deploy && tsc -p tsconfig.json",
+    "start": "node ./dist/index.js",
+    "dev:server": "tsx watch ./src/index.ts",
+    "dev:prisma": "prisma generate --watch",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:prisma\"",
+    "generate:prisma": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "type": "module",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@apollo/server": "^4.11.0",
     "@pothos/core": "^4.3.0",
+    "@pothos/plugin-prisma": "^4.2.1",
     "@prisma/client": "^5.20.0",
-    "graphql": "^16.9.0"
+    "graphql": "^16.9.0",
+    "graphql-scalars": "^1.23.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
+    "concurrently": "^9.0.1",
     "prettier": "3.3.3",
+    "prisma": "^5.20.0",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
   }

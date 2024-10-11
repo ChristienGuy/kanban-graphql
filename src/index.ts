@@ -1,58 +1,71 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
-const typeDefs = `#graphql
-  type Task {
-    id: ID!
-    title: String!
-    tags: [Tag!]!
-  }
+import SchemaBuilder from "@pothos/core";
+import { PrismaClient } from "@prisma/client";
+import PrismaPlugin from "@pothos/plugin-prisma";
+import { DateResolver } from "graphql-scalars";
 
-  type Tag {
-    id: ID!
-    name: String!
-    tasks: [Task!]!
-  }
+import type PrismaTypes from "@pothos/plugin-prisma/generated";
 
-  type Query {
-    tasks: [Task!]!
-    tags: [Tag!]!
-  }
-`;
+const prisma = new PrismaClient({});
 
-// TODO: move to database
-
-const tasks = [
-  {
-    id: "1",
-    title: "Create a new Remix app",
-    tags: [
-      { id: "1", name: "Remix" },
-      {
-        id: "2",
-        name: "GraphQL",
-      },
-    ],
+const builder = new SchemaBuilder<{
+  Scalars: {
+    Date: { Input: Date; Output: Date };
+  };
+  PrismaTypes: PrismaTypes;
+}>({
+  plugins: [PrismaPlugin],
+  prisma: {
+    client: prisma,
+    // warn when not using a query parameter correctly
+    onUnusedQuery: process.env.NODE_ENV === "production" ? null : "warn",
   },
-  {
-    id: "2",
-    title: "Add a GraphQL server",
-    tags: [{ id: "2", name: "GraphQL" }],
-  },
-];
+});
 
-const resolvers = {
-  Query: {
-    tasks() {
-      return tasks;
+builder.queryType();
+// builder.mutationType();
+
+builder.addScalarType("Date", DateResolver);
+
+builder.prismaObject("Task", {
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    title: t.exposeString("title"),
+    tags: t.relation("tags"),
+    createdAt: t.expose("createdAt", {
+      type: "Date",
+    }),
+    updatedAt: t.expose("updatedAt", {
+      type: "Date",
+    }),
+  }),
+});
+
+builder.prismaObject("Tag", {
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    name: t.exposeString("name"),
+    createdAt: t.expose("createdAt", {
+      type: "Date",
+    }),
+    updatedAt: t.expose("updatedAt", {
+      type: "Date",
+    }),
+  }),
+});
+
+builder.queryFields((t) => ({
+  tasks: t.prismaField({
+    type: ["Task"],
+    resolve: async (query, root, args, ctx) => {
+      return prisma.task.findMany();
     },
-    tags() {
-      return tasks.flatMap((task) => task.tags);
-    },
-  },
-};
+  }),
+}));
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ schema: builder.toSchema() });
 
 const { url } = await startStandaloneServer(server, {
   listen: {
