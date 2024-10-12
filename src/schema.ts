@@ -77,7 +77,10 @@ builder.queryFields((t) => ({
     args: { id: t.arg.id() },
     resolve: async (query, root, args, context) => {
       return prisma.project.findUniqueOrThrow({
-        where: { id: args.id ?? undefined },
+        where: {
+          id: args.id ?? undefined,
+          userId: context.auth.userId ?? undefined,
+        },
       });
     },
   }),

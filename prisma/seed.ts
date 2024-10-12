@@ -24,7 +24,7 @@ try {
                   tags: {
                     create: [
                       {
-                        name: "blog",
+                        name: "Todo",
                         userId,
                       },
                     ],
@@ -36,7 +36,7 @@ try {
                   tags: {
                     create: [
                       {
-                        name: "video",
+                        name: "In Progress",
                         userId,
                       },
                     ],
