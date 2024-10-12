@@ -12,26 +12,35 @@ try {
       id: userId,
       email: "chris@chrisguy.me",
       name: "Chris",
-      tasks: {
+      projects: {
         create: [
           {
-            title: "Create a blog post",
-            tags: {
+            title: "Kanban board",
+            tasks: {
               create: [
                 {
-                  name: "blog",
+                  title: "Create a blog post",
                   userId,
+                  tags: {
+                    create: [
+                      {
+                        name: "blog",
+                        userId,
+                      },
+                    ],
+                  },
                 },
-              ],
-            },
-          },
-          {
-            title: "Create a video",
-            tags: {
-              create: [
                 {
-                  name: "video",
+                  title: "Create a video",
                   userId,
+                  tags: {
+                    create: [
+                      {
+                        name: "video",
+                        userId,
+                      },
+                    ],
+                  },
                 },
               ],
             },

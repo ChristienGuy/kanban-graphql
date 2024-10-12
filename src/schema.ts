@@ -7,6 +7,22 @@ builder.prismaObject("User", {
     name: t.exposeString("name"),
     tasks: t.relation("tasks"),
     tags: t.relation("tags"),
+    projects: t.relation("projects"),
+    createdAt: t.expose("createdAt", {
+      type: "Date",
+    }),
+    updatedAt: t.expose("updatedAt", {
+      type: "Date",
+    }),
+  }),
+});
+
+builder.prismaObject("Project", {
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    title: t.exposeString("title"),
+    tasks: t.relation("tasks"),
+    user: t.relation("user"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
@@ -22,6 +38,7 @@ builder.prismaObject("Task", {
     title: t.exposeString("title"),
     tags: t.relation("tags"),
     user: t.relation("user"),
+    project: t.relation("project"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
@@ -47,6 +64,23 @@ builder.prismaObject("Tag", {
 });
 
 builder.queryFields((t) => ({
+  projects: t.prismaField({
+    type: ["Project"],
+    resolve: async (query, root, args, context) => {
+      return prisma.project.findMany({
+        where: { userId: context.auth.userId ?? undefined },
+      });
+    },
+  }),
+  project: t.prismaField({
+    type: "Project",
+    args: { id: t.arg.id() },
+    resolve: async (query, root, args, context) => {
+      return prisma.project.findUniqueOrThrow({
+        where: { id: args.id ?? undefined },
+      });
+    },
+  }),
   tasks: t.prismaField({
     type: ["Task"],
     resolve: async (query, root, args, context) => {
