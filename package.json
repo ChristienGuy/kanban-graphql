@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "prisma generate && prisma migrate deploy && tsc -p tsconfig.json",
-    "start": "node ./dist/app.js",
-    "dev:server": "tsx watch ./src/app.ts",
+    "start": "node ./dist/server.js",
+    "dev:server": "tsx watch ./src/server.ts",
     "dev:prisma": "prisma generate --watch",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:prisma\"",
     "generate:prisma": "prisma generate"

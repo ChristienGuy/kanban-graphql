@@ -67,8 +67,13 @@ builder.queryFields((t) => ({
   projects: t.prismaField({
     type: ["Project"],
     resolve: async (query, root, args, context) => {
+      console.log("context.auth.userId", context.auth.userId);
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
       return prisma.project.findMany({
-        where: { userId: context.auth.userId ?? undefined },
+        where: { userId: context.auth.userId },
       });
     },
   }),
@@ -76,10 +81,14 @@ builder.queryFields((t) => ({
     type: "Project",
     args: { id: t.arg.id() },
     resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
       return prisma.project.findUniqueOrThrow({
         where: {
           id: args.id ?? undefined,
-          userId: context.auth.userId ?? undefined,
+          userId: context.auth.userId,
         },
       });
     },
@@ -87,17 +96,25 @@ builder.queryFields((t) => ({
   tasks: t.prismaField({
     type: ["Task"],
     resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
       return prisma.task.findMany({
-        where: { userId: context.auth.userId ?? undefined },
+        where: { userId: context.auth.userId },
       });
     },
   }),
   tags: t.prismaField({
     type: ["Tag"],
     resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
       return prisma.tag.findMany({
         where: {
-          userId: context.auth.userId ?? undefined,
+          userId: context.auth.userId,
         },
       });
     },
@@ -105,8 +122,31 @@ builder.queryFields((t) => ({
   user: t.prismaField({
     type: "User",
     resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
       return prisma.user.findUniqueOrThrow({
-        where: { id: context.auth.userId ?? "" },
+        where: { id: context.auth.userId },
+      });
+    },
+  }),
+}));
+
+builder.mutationFields((t) => ({
+  createTask: t.prismaField({
+    type: "Task",
+    args: {
+      title: t.arg.string(),
+      projectId: t.arg.id(),
+    },
+    resolve: async (query, root, args, context) => {
+      return prisma.task.create({
+        data: {
+          title: args.title,
+          userId: context.auth.userId,
+          projectId: args.projectId,
+        },
       });
     },
   }),
