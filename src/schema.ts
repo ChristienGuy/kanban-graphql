@@ -139,6 +139,22 @@ builder.mutationFields((t) => ({
       });
     },
   }),
+  deleteTask: t.prismaField({
+    type: "Task",
+    args: { id: t.arg.string({ required: true }) },
+    resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
+      return prisma.task.delete({
+        ...query,
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  }),
 }));
 
 export const schema = builder.toSchema();
