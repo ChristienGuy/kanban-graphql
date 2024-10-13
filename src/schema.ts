@@ -1,3 +1,4 @@
+import { title } from "process";
 import { builder, prisma } from "./builder";
 
 builder.prismaObject("User", {
@@ -151,6 +152,31 @@ builder.mutationFields((t) => ({
         ...query,
         where: {
           id: args.id,
+        },
+      });
+    },
+  }),
+  updateTask: t.prismaField({
+    type: "Task",
+    args: {
+      id: t.arg.string({ required: true }),
+      title: t.arg.string(),
+      columnId: t.arg.string(),
+    },
+    resolve: (query, root, args, context) => {
+      // TODO: Move auth handling to business layer
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
+      return prisma.task.update({
+        ...query,
+        where: {
+          id: args.id,
+        },
+        data: {
+          title: args.title ?? undefined,
+          columnId: args.columnId ?? undefined,
         },
       });
     },
