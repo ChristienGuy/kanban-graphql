@@ -17,28 +17,41 @@ try {
         create: [
           {
             title: "Kanban board",
-            tasks: {
+            columns: {
               create: [
                 {
-                  title: "Create a blog post",
-                  userId,
-                  tags: {
+                  title: "Todo",
+                  tasks: {
                     create: [
                       {
-                        name: "Todo",
-                        userId,
+                        title: "Create a blog post",
+                        tags: {
+                          create: [
+                            {
+                              name: "Todo",
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        title: "Create a video",
                       },
                     ],
                   },
                 },
                 {
-                  title: "Create a video",
-                  userId,
-                  tags: {
+                  title: "In Progress",
+                  tasks: {
                     create: [
                       {
-                        name: "In Progress",
-                        userId,
+                        title: "Create a video",
+                        tags: {
+                          create: [
+                            {
+                              name: "video",
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
@@ -62,33 +75,34 @@ try {
         create: [
           {
             title: "Mary's Kanban board",
-            tasks: {
-              create: [
-                {
-                  title: "Create a blog post",
-                  userId: maryUserId,
-                  tags: {
-                    create: [
-                      {
-                        name: "Todo",
-                        userId: maryUserId,
+            columns: {
+              create: {
+                title: "Todo",
+                tasks: {
+                  create: [
+                    {
+                      title: "Create a blog post",
+                      tags: {
+                        create: [
+                          {
+                            name: "Todo",
+                          },
+                        ],
                       },
-                    ],
-                  },
-                },
-                {
-                  title: "Create a video",
-                  userId: maryUserId,
-                  tags: {
-                    create: [
-                      {
-                        name: "In Progress",
-                        userId: maryUserId,
+                    },
+                    {
+                      title: "Create a video",
+                      tags: {
+                        create: [
+                          {
+                            name: "In Progress",
+                          },
+                        ],
                       },
-                    ],
-                  },
+                    },
+                  ],
                 },
-              ],
+              },
             },
           },
         ],
