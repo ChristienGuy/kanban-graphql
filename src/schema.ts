@@ -1,4 +1,3 @@
-import { title } from "process";
 import { builder, prisma } from "./builder";
 
 builder.prismaObject("User", {
@@ -7,20 +6,6 @@ builder.prismaObject("User", {
     email: t.exposeString("email"),
     name: t.exposeString("name"),
     projects: t.relation("projects"),
-    createdAt: t.expose("createdAt", {
-      type: "Date",
-    }),
-    updatedAt: t.expose("updatedAt", {
-      type: "Date",
-    }),
-  }),
-});
-
-builder.prismaObject("Column", {
-  fields: (t) => ({
-    id: t.exposeID("id"),
-    title: t.exposeString("title"),
-    tasks: t.relation("tasks"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
@@ -45,11 +30,27 @@ builder.prismaObject("Project", {
   }),
 });
 
+builder.prismaObject("Column", {
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    title: t.exposeString("title"),
+    tasks: t.relation("tasks"),
+    position: t.exposeString("position"),
+    createdAt: t.expose("createdAt", {
+      type: "Date",
+    }),
+    updatedAt: t.expose("updatedAt", {
+      type: "Date",
+    }),
+  }),
+});
+
 builder.prismaObject("Task", {
   fields: (t) => ({
     id: t.exposeID("id"),
     title: t.exposeString("title"),
     tags: t.relation("tags"),
+    position: t.exposeString("position"),
     createdAt: t.expose("createdAt", {
       type: "Date",
     }),
@@ -161,7 +162,7 @@ builder.mutationFields((t) => ({
     args: {
       id: t.arg.string({ required: true }),
       title: t.arg.string(),
-      columnId: t.arg.string(),
+      position: t.arg.string(),
     },
     resolve: (query, root, args, context) => {
       // TODO: Move auth handling to business layer
@@ -176,7 +177,6 @@ builder.mutationFields((t) => ({
         },
         data: {
           title: args.title ?? undefined,
-          columnId: args.columnId ?? undefined,
         },
       });
     },
