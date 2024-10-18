@@ -2,60 +2,96 @@ import { builder, prisma } from "./builder";
 
 builder.prismaObject("User", {
   fields: (t) => ({
-    id: t.exposeID("id"),
-    email: t.exposeString("email"),
+    id: t.exposeID("id", {
+      nullable: false,
+    }),
+    email: t.exposeString("email", {
+      nullable: false,
+    }),
     name: t.exposeString("name"),
-    projects: t.relation("projects"),
+    projects: t.relation("projects", {
+      nullable: false,
+    }),
     createdAt: t.expose("createdAt", {
       type: "Date",
+      nullable: false,
     }),
     updatedAt: t.expose("updatedAt", {
       type: "Date",
+      nullable: false,
     }),
   }),
 });
 
 builder.prismaObject("Project", {
   fields: (t) => ({
-    id: t.exposeID("id"),
-    title: t.exposeString("title"),
-    owner: t.relation("owner"),
-    columns: t.relation("columns"),
+    id: t.exposeID("id", {
+      nullable: false,
+    }),
+    title: t.exposeString("title", {
+      nullable: false,
+    }),
+    owner: t.relation("owner", {
+      nullable: false,
+    }),
+    columns: t.relation("columns", {
+      nullable: false,
+    }),
     createdAt: t.expose("createdAt", {
       type: "Date",
+      nullable: false,
     }),
     updatedAt: t.expose("updatedAt", {
       type: "Date",
+      nullable: false,
     }),
   }),
 });
 
 builder.prismaObject("Column", {
   fields: (t) => ({
-    id: t.exposeID("id"),
-    title: t.exposeString("title"),
-    tasks: t.relation("tasks"),
-    position: t.exposeString("position"),
+    id: t.exposeID("id", {
+      nullable: false,
+    }),
+    title: t.exposeString("title", {
+      nullable: false,
+    }),
+    tasks: t.relation("tasks", {
+      nullable: false,
+    }),
+    position: t.exposeString("position", {
+      nullable: false,
+    }),
     createdAt: t.expose("createdAt", {
       type: "Date",
+      nullable: false,
     }),
     updatedAt: t.expose("updatedAt", {
       type: "Date",
+      nullable: false,
     }),
   }),
 });
 
 builder.prismaObject("Task", {
   fields: (t) => ({
-    id: t.exposeID("id"),
-    title: t.exposeString("title"),
+    id: t.exposeID("id", {
+      nullable: false,
+    }),
+    title: t.exposeString("title", {
+      nullable: false,
+    }),
     tags: t.relation("tags"),
-    position: t.exposeString("position"),
+    position: t.exposeString("position", {
+      nullable: false,
+    }),
     createdAt: t.expose("createdAt", {
       type: "Date",
+      nullable: false,
     }),
     updatedAt: t.expose("updatedAt", {
       type: "Date",
+      nullable: false,
     }),
   }),
 });
@@ -90,6 +126,7 @@ builder.queryFields((t) => ({
   }),
   project: t.prismaField({
     type: "Project",
+    nullable: false,
     args: { id: t.arg.id({ required: true }) },
     resolve: async (query, root, args, context) => {
       if (!context.auth.userId) {

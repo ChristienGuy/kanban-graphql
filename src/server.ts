@@ -21,7 +21,14 @@ const server = new ApolloServer({
 
 await server.start();
 
-app.use("*", express.json(), cors<cors.CorsRequest>());
+app.use(
+  "*",
+  express.json(),
+  cors<cors.CorsRequest>({
+    credentials: true,
+    origin: "http://localhost:5173",
+  }),
+);
 
 app.use(
   "/",
