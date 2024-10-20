@@ -196,6 +196,7 @@ builder.mutationFields((t) => ({
     args: {
       title: t.arg.string({ required: true }),
       columnId: t.arg.string({ required: true }),
+      position: t.arg.string({ required: true }),
     },
     resolve: async (query, root, args, context) => {
       if (!context.auth.userId) {
@@ -207,6 +208,7 @@ builder.mutationFields((t) => ({
         data: {
           title: args.title,
           columnId: args.columnId,
+          position: args.position,
         },
       });
     },
