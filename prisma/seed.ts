@@ -21,10 +21,12 @@ try {
               create: [
                 {
                   title: "Todo",
+                  position: "a1",
                   tasks: {
                     create: [
                       {
                         title: "Create a blog post",
+                        position: "a1",
                         tags: {
                           create: [
                             {
@@ -35,16 +37,19 @@ try {
                       },
                       {
                         title: "Create a video",
+                        position: "a2",
                       },
                     ],
                   },
                 },
                 {
                   title: "In Progress",
+                  position: "a2",
                   tasks: {
                     create: [
                       {
-                        title: "Create a video",
+                        title: "Edit the video",
+                        position: "a1",
                         tags: {
                           create: [
                             {
@@ -78,10 +83,12 @@ try {
             columns: {
               create: {
                 title: "Todo",
+                position: "a1",
                 tasks: {
                   create: [
                     {
                       title: "Create a blog post",
+                      position: "a1",
                       tags: {
                         create: [
                           {
@@ -92,6 +99,7 @@ try {
                     },
                     {
                       title: "Create a video",
+                      position: "a2",
                       tags: {
                         create: [
                           {

@@ -1,3 +1,4 @@
+import { title } from "process";
 import { builder, prisma } from "./builder";
 
 builder.prismaObject("User", {
@@ -70,6 +71,9 @@ builder.prismaObject("Column", {
       type: "Date",
       nullable: false,
     }),
+    project: t.relation("project", {
+      nullable: false,
+    }),
   }),
 });
 
@@ -79,6 +83,9 @@ builder.prismaObject("Task", {
       nullable: false,
     }),
     title: t.exposeString("title", {
+      nullable: false,
+    }),
+    column: t.relation("column", {
       nullable: false,
     }),
     tags: t.relation("tags"),
@@ -113,6 +120,7 @@ builder.prismaObject("Tag", {
 builder.queryFields((t) => ({
   projects: t.prismaField({
     type: ["Project"],
+    nullable: false,
     resolve: async (query, root, args, context) => {
       if (!context.auth.userId) {
         throw new Error("User not authenticated");
@@ -144,6 +152,7 @@ builder.queryFields((t) => ({
   }),
   user: t.prismaField({
     type: "User",
+    nullable: false,
     resolve: async (query, root, args, context) => {
       if (!context.auth.userId) {
         throw new Error("User not authenticated");
@@ -158,6 +167,30 @@ builder.queryFields((t) => ({
 }));
 
 builder.mutationFields((t) => ({
+  updateColumn: t.prismaField({
+    type: "Column",
+    args: {
+      id: t.arg.string({ required: true }),
+      position: t.arg.string(),
+      title: t.arg.string(),
+    },
+    resolve: async (query, root, args, context) => {
+      if (!context.auth.userId) {
+        throw new Error("User not authenticated");
+      }
+
+      return prisma.column.update({
+        ...query,
+        where: {
+          id: args.id,
+        },
+        data: {
+          position: args.position ?? undefined,
+          title: args.title ?? undefined,
+        },
+      });
+    },
+  }),
   createTask: t.prismaField({
     type: "Task",
     args: {
@@ -200,12 +233,20 @@ builder.mutationFields((t) => ({
       id: t.arg.string({ required: true }),
       title: t.arg.string(),
       position: t.arg.string(),
+      columnId: t.arg.string(),
     },
     resolve: (query, root, args, context) => {
       // TODO: Move auth handling to business layer
       if (!context.auth.userId) {
         throw new Error("User not authenticated");
       }
+      const connectColumn = args.columnId
+        ? {
+            connect: {
+              id: args.columnId,
+            },
+          }
+        : undefined;
 
       return prisma.task.update({
         ...query,
@@ -214,6 +255,8 @@ builder.mutationFields((t) => ({
         },
         data: {
           title: args.title ?? undefined,
+          position: args.position ?? undefined,
+          column: connectColumn,
         },
       });
     },
